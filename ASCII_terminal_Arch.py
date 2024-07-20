@@ -10,14 +10,7 @@ elif platform.system() == "Linux":
     os.system("clear")
 
 init()
-'''
-file_list = os.listdir()
 
-for i in range(1,len(file_list)-1):
-    print("["+str(i)+"]"+" "+ file_list[i-1])
-selection = int(input("File: "))
-filename = file_list[selection-1]
-'''
 stringinp = str(input("string: "))
 scale = float(input("scale (0.01 to 0.2): "))
 im = Image.open("test.jpg")
