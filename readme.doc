@@ -1,5 +1,4 @@
-Arch: Use virtual environment venv first
-Fedora: Not tested yet
-Debian: Compatible
+Linux: Must use virtual environment
 Window: Compatible
+Android Termux: Incompatible with terminal version
 Best to use in dark terminal
