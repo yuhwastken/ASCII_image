@@ -12,7 +12,7 @@ wlen = int(len(stringinput)*7.5)
 hlen = 18
 
 im = Image.open(files[sel])
-f = ImageFont.truetype("C:\\Window\\Fonts\\calibri.ttf",15)
+f = ImageFont.truetype("Consolas.ttf",20)
 
 width,height = im.size
 im = im.resize((int(scale*width),int(scale*height*wlen/hlen)),Image.NEAREST)
