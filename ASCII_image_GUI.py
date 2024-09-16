@@ -3,10 +3,9 @@ from tkinter import filedialog as fd
 from PIL import ImageTk,Image,ImageDraw,ImageFont
 import os
 
-
 screen = tkinter.Tk()
 screen.title("Image to Text")
-screen.geometry("220x400")
+screen.geometry("220x500")
 
 files = []
 for i in os.listdir():
@@ -15,45 +14,51 @@ for i in os.listdir():
 files = tuple(files)
 var = tkinter.Variable(value = files)
 fileselection = tkinter.Listbox(screen,listvariable = var)
-
 doButton = tkinter.Button(screen , text = "Start" )
+stringLabel = tkinter.Label(screen,text = "Input String")
 stringEntry = tkinter.Entry(screen)
+inputScale = tkinter.Label(screen, text = "Scale (Output Image Resolution)")
+scaleSlider = tkinter.Scale(screen,from_=1,to=100,orient="horizontal")
+DensityLabel = tkinter.Label(screen, text = "Density")
+densitySlider = tkinter.Scale(screen, from_=30, to=1, orient = "horizontal")
+completemsg = tkinter.Label(screen,text = "")
 
 fileselection.grid(row = 0 , column = 0 , padx = 10 , pady = 10)
-scaleSlider = tkinter.Scale(screen,from_=1,to=100,orient="horizontal")
-stringLabel = tkinter.Label(screen,text = "Input String")
 stringLabel.grid(row = 1 , column = 0, padx = 20, pady = 0)
 stringEntry.grid(row = 2 ,column = 0 , padx = 10, pady = 10)
-inputScale = tkinter.Label(screen, text = "Scale (Output Image Resolution)")
 inputScale.grid(row = 3 , column = 0, padx = 20, pady = 0)
 scaleSlider.grid(row = 4 , column = 0 ,padx = 10, pady = 10)
-doButton.grid(row = 5 , column = 0 , padx = 10 , pady = 10)
-completemsg = tkinter.Label(screen,text = "")
-completemsg.grid(row = 6, column = 0)
+DensityLabel.grid(row = 5 , padx = 10, pady = 10)
+densitySlider.grid(row = 6 , padx = 10, pady = 10)
+doButton.grid(row = 7 , column = 0 , padx = 10 , pady = 10)
+completemsg.grid(row = 8 , column = 0)
 
-def outputImage(filename,stringinput,scale):
-
-    wlen = int(len(stringinput)*10)
-    hlen = 9
+def outputImage(filename,stringinput,scale,density):
+    textLength = len(stringinput)
+    wlen = round(density*18/30)
+    hlen = density 
 
     im = Image.open(filename)
-    f = ImageFont.truetype("C:\\Window\\Fonts\\calibri.ttf",15)
+    f = ImageFont.truetype("Consolas.ttf",20)
 
     width,height = im.size
-    im = im.resize((int(scale*width),int(scale*height*wlen/hlen)),Image.NEAREST)
-    width,height = im.size
-    print(width*height)
+    print(round(width*height/textLength))
     pix = im.load()
 
-    outIm = Image.new("RGB",(width*wlen,height*hlen),color = (0,0,0))
+    outIm = Image.new("RGB",(width*wlen,round(height*wlen)),color = (0,0,0))
     d = ImageDraw.Draw(outIm)
 
+    CountChar = 0
     for i in range(height):
         for j in range(width):
             r,g,b = pix[j,i]
             h = int((r+g+b)/3)
             pix[j,i] = (h,h,h)
-            d.text((j*wlen,i*hlen),stringinput,font = f, fill = (r,g,b))
+            d.text((j*wlen,i*wlen),stringinput[CountChar],font = f, fill = (r,g,b))
+            if CountChar == (textLength-1):
+                CountChar = 0
+            else:
+                CountChar += 1
 
     outIm.save("output.jpg")
     completemsg.configure(text = "Complete! Now open output.jpg")
@@ -65,7 +70,8 @@ def startprocess():
     stringinput = stringEntry.get()
     scale = scaleSlider.get()
     scale = scale / 100
-    outputImage(filename,stringinput,scale)
+    density = densitySlider.get()
+    outputImage(filename,stringinput,scale,density)
 
 doButton["command"] = startprocess
 
